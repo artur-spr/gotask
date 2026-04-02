@@ -3,29 +3,16 @@ package config
 import (
 	"log"
 	"os"
-
-	"github.com/spf13/viper"
-)
-
-var (
-	configPath       = "~/.config/gotask"
-	configFileName   = "config"
-	configFileFormat = "yaml"
-	// configFullPath   = fmt.Sprintf("%s/%s.%s", configPath, configFileName, configFileFormat)
+	// "github.com/spf13/viper"
 )
 
 func ConfigInit() {
-	if err := createDir(configPath); err != nil {
-		log.Fatal(err)
-	}
-
-	viper.SetConfigName(configFileName)
-	viper.SetConfigType(configFileFormat)
-	viper.AddConfigPath(configPath)
+	log.Println("Hello world!")
 }
 
 func createDir(path string) error {
-	var perm os.FileMode = 0755 // Owner: read/write/execute; group: read/execute; others: read/execute.
+	// Owner: read/write/execute; group: read/execute; others: read/execute.
+	var perm os.FileMode = 0755
 
 	f := func() error {
 		if err := os.Mkdir(path, perm); err != nil {
@@ -38,6 +25,26 @@ func createDir(path string) error {
 	if err != nil {
 		return f()
 	} else if !info.IsDir() {
+		return f()
+	}
+	return nil
+}
+
+func createFile(path string) error {
+	f := func() error {
+		file, err := os.Create(path)
+		if err != nil {
+			return err
+		}
+		defer file.Close()
+
+		return nil
+	}
+
+	info, err := os.Stat(path)
+	if err != nil {
+		return f()
+	} else if info.IsDir() {
 		return f()
 	}
 	return nil
