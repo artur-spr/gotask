@@ -1,4 +1,4 @@
-package config
+package main
 
 import (
 	"log"
@@ -6,7 +6,7 @@ import (
 	// "github.com/spf13/viper"
 )
 
-func ConfigInit() {
+func init() {
 	log.Println("Hello world!")
 }
 
@@ -31,21 +31,13 @@ func createDir(path string) error {
 }
 
 func createFile(path string) error {
-	f := func() error {
-		file, err := os.Create(path)
-		if err != nil {
-			return err
-		}
-		defer file.Close()
+	// Owner: read/write/execute; group: read/execute; others: read/execute.
+	var perm os.FileMode = 0755
 
-		return nil
-	}
-
-	info, err := os.Stat(path)
+	file, err := os.OpenFile(path, os.O_CREATE, perm)
 	if err != nil {
-		return f()
-	} else if info.IsDir() {
-		return f()
+		return err
 	}
+	defer file.Close()
 	return nil
 }
